@@ -1,0 +1,27 @@
+{
+  "name": "polymarket-scanner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm run build && node dist/index.js",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "scan": "npm run build && node dist/index.js",
+    "scan:low": "npm run scan -- --cashThreshold 2000 --pollMs 30000 --minOpenMinutes 10",
+    "scan:prod": "npm run scan -- --cashThreshold 15000 --pollMs 30000 --pageSize 500 --maxPages 6 --minOpenMinutes 10 --db ./scanner.sqlite"
+  },
+  "keywords": [],
+  "author": "VarNotUsed",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "discord.js": "^14.25.1",
+    "dotenv": "^17.2.3",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  }
+}
