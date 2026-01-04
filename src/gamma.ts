@@ -15,7 +15,7 @@ type GammaMarketRaw = {
 const GAMMA_URL = "https://gamma-api.polymarket.com";
 
 const CACHE = new Map<string, { data: Market | null; ts: number }>();
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
 
 export async function getMarket(conditionId: string): Promise<Market | null> {
   const cached = CACHE.get(conditionId);
