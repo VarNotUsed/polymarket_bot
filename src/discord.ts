@@ -15,8 +15,8 @@ export type AlertPayload = {
   walletAgeDays: number;
   notional24h: number;
   totalTrades: number;
-  topMarketShare7d: number;
-  uniqueEvents7d: number;
+  topMarketShare30d: number;
+  uniqueEvents30d: number;
 };
 
 export function createDiscord(token: string, userId: string) {
@@ -80,8 +80,8 @@ export function createDiscord(token: string, userId: string) {
         { name: "Wallet Age", value: `${a.walletAgeDays.toFixed(2)} days`, inline: true },
         { name: "Notional (24h)", value: `$${fmtMoney(a.notional24h)}`, inline: true },
         { name: "Total Trades", value: String(a.totalTrades), inline: true },
-        { name: "Top Market Share (7d)", value: `${(a.topMarketShare7d * 100).toFixed(0)}%`, inline: true },
-        { name: "Unique Events (7d)", value: String(a.uniqueEvents7d), inline: true }
+        { name: "Top Market Share (30d)", value: `${(a.topMarketShare30d * 100).toFixed(0)}%`, inline: true },
+        { name: "Unique Events (30d)", value: String(a.uniqueEvents30d), inline: true }
       )
       .setTimestamp();
 

@@ -90,8 +90,8 @@ async function main() {
         ` ageDays=${a.walletAgeDays.toFixed(2)}` +
         ` notional24h=$${fmtMoney(a.notional24h)}` +
         ` totalTrades=${a.totalTrades}` +
-        ` topMarketShare7d=${(a.topMarketShare7d * 100).toFixed(0)}%` +
-        ` uniqueEvents7d=${a.uniqueEvents7d}`
+        ` topMarketShare30d=${(a.topMarketShare30d * 100).toFixed(0)}%` +
+        ` uniqueEvents30d=${a.uniqueEvents30d}`
       );
 
       discord.sendAlertDM({
@@ -101,8 +101,8 @@ async function main() {
         walletAgeDays: a.walletAgeDays,
         notional24h: a.notional24h,
         totalTrades: a.totalTrades,
-        topMarketShare7d: a.topMarketShare7d,
-        uniqueEvents7d: a.uniqueEvents7d
+        topMarketShare30d: a.topMarketShare30d,
+        uniqueEvents30d: a.uniqueEvents30d
       });
     }
   }

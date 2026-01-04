@@ -9,10 +9,10 @@ export type WalletAlert = {
   walletAgeDays: number;
   totalTrades: number;
   notional24h: number;
-  notional7d: number;
-  uniqueEvents7d: number;
-  uniqueMarkets7d: number;
-  topMarketShare7d: number;
+  notional30d: number;
+  uniqueEvents30d: number;
+  uniqueMarkets30d: number;
+  topMarketShare30d: number;
   firstSeen: number;
   lastSeen: number;
 
@@ -58,7 +58,7 @@ export async function scoreWallet(
   const totalTrades = Number(base.totalTrades);
 
   const since24h = nowTs - 86400;
-  const since7d = nowTs - 7 * 86400;
+  const since30d = nowTs - 30 * 86400;
 
   const w24 = await db.get<{ notional24h: number; trades24h: number }>(
     `
@@ -73,22 +73,22 @@ export async function scoreWallet(
     since24h
   );
 
-  const w7 = await db.get<{
-    notional7d: number;
-    uniqueMarkets7d: number;
-    uniqueEvents7d: number;
+  const w30 = await db.get<{
+    notional30d: number;
+    uniqueMarkets30d: number;
+    uniqueEvents30d: number;
   }>(
     `
     SELECT
-      COALESCE(SUM(notional), 0) AS notional7d,
-      COUNT(DISTINCT condition_id) AS uniqueMarkets7d,
-      COUNT(DISTINCT event_slug) AS uniqueEvents7d
+      COALESCE(SUM(notional), 0) AS notional30d,
+      COUNT(DISTINCT condition_id) AS uniqueMarkets30d,
+      COUNT(DISTINCT event_slug) AS uniqueEvents30d
     FROM trades
     WHERE proxy_wallet = ?
       AND ts >= ?
     `,
     proxyWallet,
-    since7d
+    since30d
   );
 
   const top = await db.get<{ condition_id: string; n: number }>(
@@ -104,18 +104,18 @@ export async function scoreWallet(
     LIMIT 1
     `,
     proxyWallet,
-    since7d
+    since30d
   );
 
   const notional24h = Number(w24?.notional24h ?? 0);
   const trades24h = Number(w24?.trades24h ?? 0);
 
-  const notional7d = Number(w7?.notional7d ?? 0);
-  const uniqueMarkets7d = Number(w7?.uniqueMarkets7d ?? 0);
-  const uniqueEvents7d = Number(w7?.uniqueEvents7d ?? 0);
+  const notional30d = Number(w30?.notional30d ?? 0);
+  const uniqueMarkets30d = Number(w30?.uniqueMarkets30d ?? 0);
+  const uniqueEvents30d = Number(w30?.uniqueEvents30d ?? 0);
 
   const topMarketNotional = Number(top?.n ?? 0);
-  const topMarketShare7d = notional7d > 0 ? topMarketNotional / notional7d : 0;
+  const topMarketShare30d = notional30d > 0 ? topMarketNotional / notional30d : 0;
 
   const walletAgeDays = (nowTs - firstSeen) / 86400;
 
@@ -155,8 +155,8 @@ export async function scoreWallet(
   }
 
   if (
-    notional7d >= cashThreshold &&
-    (topMarketShare7d >= 0.85 || (uniqueEvents7d > 0 && uniqueEvents7d <= 1))
+    notional30d >= cashThreshold &&
+    (topMarketShare30d >= 0.85 || (uniqueEvents30d > 0 && uniqueEvents30d <= 1))
   ) {
     flags.push("CONCENTRATED");
     score += 3;
@@ -176,10 +176,10 @@ export async function scoreWallet(
     walletAgeDays,
     totalTrades,
     notional24h,
-    notional7d,
-    uniqueEvents7d,
-    uniqueMarkets7d,
-    topMarketShare7d,
+    notional30d,
+    uniqueEvents30d,
+    uniqueMarkets30d,
+    topMarketShare30d,
     firstSeen,
     lastSeen,
     minutesUntilClose,
