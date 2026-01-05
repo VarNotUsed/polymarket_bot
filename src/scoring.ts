@@ -145,7 +145,7 @@ export async function scoreWallet(
   const flags: string[] = [];
   let score = 0;
 
-  const isNew = walletAgeDays <= 7;
+  const isNew = walletAgeDays <= 30;
   const isBig24h = notional24h >= cashThreshold;
   const isLowHistory = totalTrades <= 30;
 
